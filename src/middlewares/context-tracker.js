@@ -44,7 +44,13 @@ module.exports = function ContextTrackerMiddleware(broker) {
 				addContext(ctx);
 
 				// Call the handler
-				let p = handler(ctx);
+				let p;
+				try {
+					p = handler(ctx);
+				} catch (error) {
+					removeContext(ctx);
+					throw error;
+				}
 
 				p = p
 					.then(res => {
